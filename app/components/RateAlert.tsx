@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@app/components/ui/select"
 import { Button } from "@app/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@app/components/ui/card"
-import { Line, LineChart, XAxis, YAxis, Tooltip, ResponsiveContainer,CartesianGrid } from "recharts"
+import { Card, CardContent } from "@app/components/ui/card"
+import { Line, LineChart, XAxis, YAxis, ResponsiveContainer, CartesianGrid } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@app/components/ui/chart"
-import { Flag,SquarePlus } from 'lucide-react'
+import { Flag, SquarePlus } from 'lucide-react'
+import RateAlertModal from '@app/components/AlertModal'
 
 type ForexData = {
   date: string
@@ -41,6 +42,7 @@ export default function RateAlertDashboard() {
   const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0])
   const [forexData, setForexData] = useState<ForexData[]>([])
   const [currentRate, setCurrentRate] = useState<number | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
     fetchForexData(selectedCountry.currency)
@@ -66,10 +68,15 @@ export default function RateAlertDashboard() {
 
   const formatYAxis = (value: number) => `${value}L`
 
+  const handleSubmit = (title: string, value: number) => {
+    // Here you would typically handle saving to Firebase
+    console.log('Submitted:', { title, value })
+    setIsModalOpen(false)
+  }
+
   return (
     <Card className="w-min px-4 p-7 pb-4 pl-5 max-w-3xl bg-[#222222] text-white border-none">
-    
-      <CardContent className=' w-min'>
+      <CardContent className='w-min'>
         <div className="mb-8">
           <Select
             value={selectedCountry.code}
@@ -107,7 +114,7 @@ export default function RateAlertDashboard() {
         >
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={forexData}>
-                <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis tickFormatter={formatYAxis} />
               <ChartTooltip content={<ChartTooltipContent />} />
@@ -116,13 +123,22 @@ export default function RateAlertDashboard() {
           </ResponsiveContainer>
         </ChartContainer>
 
-        <div className="mt-4  flex justify-between items-center">
+        <div className="mt-4 flex justify-between items-center">
           <div className="text-4xl font-bold">₹{currentRate?.toFixed(2)}</div>
-            <Button className=" hover:bg-emerald-600 rounded-3xl p-4 text-black font-semibold">
+          <Button 
+            className="hover:bg-emerald-600 rounded-3xl p-4 text-black font-semibold"
+            onClick={() => setIsModalOpen(true)}
+          >
             Set alert
             <SquarePlus className="h-5 w-5 " />
           </Button>
         </div>
+
+        <RateAlertModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleSubmit}
+        />
       </CardContent>
     </Card>
   )
