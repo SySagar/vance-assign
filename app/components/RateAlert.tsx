@@ -137,7 +137,7 @@ export default function RateAlertDashboard(
         </ChartContainer>
 
         <div className="mt-4 flex justify-between items-center">
-          <div className="text-4xl font-bold">₹{currentRate?.toFixed(2)}</div>
+          <div className="text-3xl font-bold">₹{currentRate?.toFixed(2)}</div>
           <Button 
             className="hover:bg-emerald-600 rounded-3xl p-4 text-black font-semibold"
             onClick={() => setIsModalOpen(true)}

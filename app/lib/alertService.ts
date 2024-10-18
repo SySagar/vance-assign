@@ -24,3 +24,17 @@ export const getRateAlerts = async () => {
   });
   return alerts;
 };
+
+
+export const checkAlertTrigger = async (alert: { value: number, currency: string }) => {
+  const response = await fetch(`https://web-api.vance.club/public/api/currency-converter/forex?code=${alert.currency}INR%3DX&timeline=1M`)
+  const data = await response.json()
+  
+  for (const item of data) {
+    if (parseFloat(item.close) >= alert.value) {
+      return new Date(item.resDate).toLocaleDateString('en-GB')
+    }
+  }
+  
+  return undefined
+}

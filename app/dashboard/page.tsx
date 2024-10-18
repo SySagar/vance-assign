@@ -3,6 +3,7 @@ import React from 'react'
 import RateAlertDashboard from '@app/components/RateAlert'
 import { getRateAlerts } from '@app/lib/alertService';
 import { useState, useEffect } from 'react'
+import PreviousAlerts from '@app/components/PreviousAlerts'
 
 
 type typeRateAlert = {
@@ -28,7 +29,7 @@ export default function page() {
     fetchAlerts();
   }, []);
 
-  
+  console.log("hehes")
 
 
   return (
@@ -36,10 +37,15 @@ export default function page() {
         <div className='flex flex-col gap-12 justify-center items-center'>
         <p className="text-3xl text-white font-bold">Rate alert dashboard</p>
         <RateAlertDashboard onAlertSubmit={fetchAlerts}  />
+
+    
+        <div className='w-full flex flex-col justify-center items-center mt-16 '>
+        <PreviousAlerts />
+      </div>
         </div>
 
     
-      <div>
+      {/* <div>
       <h2 className="text-white text-xl mt-6 mb-2">Previous Alerts</h2>
       <ul className="space-y-2">
         {alerts.map((alert) => (
@@ -48,7 +54,7 @@ export default function page() {
           </li>
         ))}
       </ul>
-      </div>
+      </div> */}
     </div>
   )
 }
