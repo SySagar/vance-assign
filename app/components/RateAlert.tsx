@@ -9,6 +9,10 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@app/componen
 import { Flag, SquarePlus } from 'lucide-react'
 import RateAlertModal from '@app/components/AlertModal'
 
+type RateAlertDashboardProps = {
+  onAlertSubmit: () => void; 
+};
+
 type ForexData = {
   date: string
   rate: number
@@ -38,7 +42,9 @@ const countries: Country[] = [
   { name: "UAE", code: "AE", currency: "AED" },
 ]
 
-export default function RateAlertDashboard() {
+export default function RateAlertDashboard(
+  { onAlertSubmit }: RateAlertDashboardProps
+) {
   const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0])
   const [forexData, setForexData] = useState<ForexData[]>([])
   const [currentRate, setCurrentRate] = useState<number | null>(null)
@@ -86,7 +92,7 @@ export default function RateAlertDashboard() {
               <SelectValue>
                 <div className="flex items-center">
                   <Flag className="mr-2 h-4 w-4" />
-                  {selectedCountry.name} £({selectedCountry.currency})
+                  {selectedCountry.name} <span className='text-[12px] ml-2 text-stone-400'>£({selectedCountry.currency})</span>
                 </div>
               </SelectValue>
             </SelectTrigger>
@@ -106,18 +112,25 @@ export default function RateAlertDashboard() {
         <ChartContainer
           config={{
             rate: {
-              label: "Exchange Rate",
-              color: "hsl(var(--chart-1))",
+              label: "",
+              color: "white",
+              
             },
           }}
           className="h-[300px]"
         >
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={forexData}>
+            
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis tickFormatter={formatYAxis} />
-              <ChartTooltip content={<ChartTooltipContent />} />
+              <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent 
+                className='text-white'
+              hideLabel />}
+            />
               <Line type="monotone" dataKey="rate" stroke="#10b981" strokeWidth={2} dot={false} />
             </LineChart>
           </ResponsiveContainer>
@@ -138,6 +151,7 @@ export default function RateAlertDashboard() {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onSubmit={handleSubmit}
+          onAlertSubmit={onAlertSubmit} 
         />
       </CardContent>
     </Card>

@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@app/component
 import { Input } from "@app/components/ui/input"
 import { Button } from "@app/components/ui/button"
 import { Label } from "@app/components/ui/label"
+import { addRateAlert } from '@app/lib/alertService';
 
 import Image from 'next/image'
 
@@ -12,18 +13,27 @@ type RateAlertModalProps = {
   isOpen: boolean
   onClose: () => void
   onSubmit: (title: string, value: number) => void
+  onAlertSubmit: () => void
 }
 
-export default function RateAlertModal({ isOpen, onClose, onSubmit }: RateAlertModalProps) {
+export default function RateAlertModal({ isOpen, onClose, onSubmit,onAlertSubmit }: RateAlertModalProps) {
   const [title, setTitle] = useState('')
   const [value, setValue] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     onSubmit(title, parseFloat(value))
-    setTitle('')
-    setValue('')
-    onClose()
+
+    const addAlert = async ()=>await addRateAlert(title, parseFloat(value), "GBP")
+
+    addAlert().then(() => {
+
+      setTitle('')
+      setValue('')
+      console.log('Submitted:', { title, value })
+      onAlertSubmit()
+      onClose()
+    })
   }
 
   return (
