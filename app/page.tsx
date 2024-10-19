@@ -15,10 +15,10 @@ export default function Home() {
   const img4Ref = useRef(null);
 
   const bgRef = useRef(null);
-  const textRef = useRef(null); 
+  const textRef = useRef<HTMLDivElement>(null); 
   const prevtextRef = useRef(null); 
   const parentRef = useRef(null);
-  const nextTextRef = useRef(null);
+  const nextTextRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -74,12 +74,17 @@ export default function Home() {
         duration: 2,
         ease: "power1.out",
           onStart: () => {
-            textRef.current.style.display = "none";
-            textRef.current.style.transition = "all 0.5s";
+            if(textRef.current ){
+              textRef.current.style.display = "none";
+              textRef.current.style.transition = "all 0.5s";
+            }
           },
           onReverseComplete: () => {
-            textRef.current.style.display = "flex";
-            textRef.current.style.transition = "all 0.5s";
+            if(textRef.current ){
+
+              textRef.current.style.display = "flex";
+              textRef.current.style.transition = "all 0.5s";
+            }
           }
           
       }, "<")
@@ -90,12 +95,17 @@ export default function Home() {
         duration: 2,
         ease: "power1.out",
           onStart: () => {
-            nextTextRef.current.style.display = "flex";
-            nextTextRef.current.style.transition = "all 0.5s";
+            if(nextTextRef.current )
+            if(nextTextRef.current ){
+              nextTextRef.current.style.display = "flex";
+              nextTextRef.current.style.transition = "all 0.5s";
+            }
           },
           onReverseComplete: () => {
-            nextTextRef.current.style.display = "none";
-            nextTextRef.current.style.transition = "all 0.5s";
+            if(nextTextRef.current ){
+              nextTextRef.current.style.display = "none";
+              nextTextRef.current.style.transition = "all 0.5s";
+            }
           }
       }, "<")
       .to(img3Ref.current, {
@@ -171,7 +181,7 @@ Whether you're sending money home, paying for services in a{<br/>} different cur
         <div className="relative w-full h-[700px] mt-24">
           <Image
             ref={img1Ref}
-            src="/f1.svg"
+            src="framers/p1.svg"
             alt="hero"
             layout="fill"
             objectFit="contain"
