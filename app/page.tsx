@@ -16,7 +16,7 @@ export default function Home() {
   const nextTextRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger)
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -26,9 +26,8 @@ export default function Home() {
         pin: true,
         scrub: 1,
         anticipatePin: 1,
-        
       },
-    });
+    })
 
     tl.to(img1Ref.current, {
       opacity: 0,
@@ -50,14 +49,6 @@ export default function Home() {
         duration: 1,
         ease: "power1.out",
       }, "+=1")
-
-      .to(img3Ref.current, {
-        opacity: 1,
-        scale: 2,
-        y: -60,
-        duration: 1,
-        ease: "power1.out",
-      }, "<")
       .to(containerRef.current, {
         backgroundColor: "black",
         duration: 0.5,
@@ -65,36 +56,26 @@ export default function Home() {
       }, "-=1.0")
       .to(textRef.current, {
         opacity: 0,
-        x: 100,
-        duration: 0.5,
+        display: "none",
+        x: 50,
+        duration: 0,
         ease: "power1.out",
-        onStart: () => {
-          if (textRef.current) {
-            textRef.current.style.display = "none";
-          }
-        },
-        onReverseComplete: () => {
-          if (textRef.current) {
-            textRef.current.style.display = "flex";
-          }
-        }
       }, "<")
       .to(nextTextRef.current, {
         opacity: 1,
+        display: "flex",
         x: 0,
-        duration: 0.5,
+        duration: 1,
         ease: "power1.out",
-        onStart: () => {
-          if (nextTextRef.current) {
-            nextTextRef.current.style.display = "flex";
-          }
-        },
-        onReverseComplete: () => {
-          if (nextTextRef.current) {
-            nextTextRef.current.style.display = "none";
-          }
-        }
       }, "<")
+      .to(img3Ref.current, {
+        opacity: 1,
+        scale: 2,
+        y: -60,
+        duration: 1,
+        ease: "power1.out",
+      }, "<")
+   
       .to(img3Ref.current, {
         opacity: 0,
         scale: 0.8,
@@ -109,14 +90,15 @@ export default function Home() {
         duration: 1,
         ease: "power1.out",
         onComplete: () => {
-          console.log("done");
+          console.log("Animation completed")
         }
       }, "<")
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
-  }, []);
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+    }
+  }, [])
+
 
   return (
     <div ref={containerRef} className="flex flex-col items-center justify-center min-h-screen w-full overflow-hidden bg-white text-black">
@@ -170,7 +152,6 @@ export default function Home() {
             src="/f1.svg"
             alt="hero"
             layout="fill"
-            objectFit="contain"
             className="absolute top-0 left-0 scale-110"
           />
           <Image
@@ -178,7 +159,6 @@ export default function Home() {
             src="/f2.svg"
             alt="hero 2"
             layout="fill"
-            objectFit="contain"
             className="absolute top-0 left-0 opacity-0 scale-100"
           />
           <Image
@@ -187,7 +167,6 @@ export default function Home() {
             alt="hero 3"
             width={500}
             height={500}
-            objectFit="contain"
             className="absolute top-0 left-1/2 transform -translate-x-1/2  pb-[250px] opacity-0 scale-125"
           />
           <Image
@@ -196,7 +175,6 @@ export default function Home() {
             alt="hero 4"
             width={900}
             height={900}
-            objectFit="contain"
             className="absolute top-0 left-32 opacity-0 scale-125"
           />
           

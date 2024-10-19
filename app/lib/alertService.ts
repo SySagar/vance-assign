@@ -1,4 +1,3 @@
-// alertService.ts
 import { db } from './firebase';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 

@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import PreviousAlerts from '@app/components/PreviousAlerts'
 import useLoading from '@app/store/useLoading'
 import { checkAlertTrigger } from '@app/lib/alertService';
+import {withAuthProtection} from '@app/components/Wrapper'
 
 type typeRateAlert = {
   id: string
@@ -16,7 +17,7 @@ type typeRateAlert = {
 }
 
 
-export default function Page() {
+const dashboard = ()=> {
   
   const [alerts, setAlerts] = useState<typeRateAlert[]>([]);
   const {setLoading} = useLoading()
@@ -73,3 +74,6 @@ export default function Page() {
     </div>
   )
 }
+
+
+export default withAuthProtection(dashboard);

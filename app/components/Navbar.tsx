@@ -1,10 +1,14 @@
 "use client";
 import * as React from "react";
 import Link from "next/link";
-import { Menu,  ArrowDown } from "lucide-react";
-
+import { useRouter } from "next/navigation"; // Import the useRouter hook
+import { Menu, ArrowDown } from "lucide-react";
+import { useState, useEffect } from "react";
+import { signInWithGoogle, signOutUser, auth } from "@app/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { Button } from "@app/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@app/components/ui/sheet";
+import {LogInIcon} from "lucide-react";
 
 const navigation = [
   { name: "Home", href: "#" },
@@ -15,6 +19,27 @@ const navigation = [
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [user, setUser] = useState(null);
+  const router = useRouter(); 
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser:any) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleGoogleLogin = async () => {
+    try {
+      await signInWithGoogle(router);
+      router.push("/dashboard"); 
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
+
+  console.log(user);
 
   return (
     <nav className="bg-[#111111] p-4 border-b-[1px] border-[#292929]">
@@ -65,13 +90,35 @@ export default function Navbar() {
             </Link>
           ))}
         </div>
-        <div className="hidden md:block">
+        <div className="hidden md:flex md:justify-center md:items-center gap-3">
+
+        {user!==null ? (
+                  <>
+                    <span className="mr-4">Hello, {user.displayName}</span>
+                    <button
+                      onClick={()=>signOutUser(router)}
+                      className="px-4 py-2 bg-red-500 hover:bg-red-700 rounded"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <Button
+                  variant={"ghost"}
+                    onClick={handleGoogleLogin}
+                    className="px-4 py-2 rounded-xl text-primary  hover:bg-[#5FD789] hover:bg-opacity-25 hover:text-white"
+                  >
+                     Login <LogInIcon className="h-5 w-5" />
+                  </Button>
+                )}
+
           <Button className="text-black p-6 rounded-3xl font-bold tracking-tight">
             Download app
             <div className="h-5 w-5 ml-2 bg-black rounded-3xl flex justify-center items-centers">
               <ArrowDown className="stroke-[var(--stroke-color)] max-h-4 max-w-4 mt-[2px]" />
             </div>
           </Button>
+      
         </div>
         <div className="md:hidden">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -96,9 +143,28 @@ export default function Navbar() {
                     {item.name}
                   </Link>
                 ))}
-                <Button className=" text-black hover:bg-[#5FD789] w-full">
+                <Button className="text-black hover:bg-[#5FD789] w-full">
                   Download app
                 </Button>
+
+                {user!==null ? (
+                  <>
+                    <span className="mr-4">Hello, {user.displayName}</span>
+                    <button
+                      onClick={()=>signOutUser(router)}
+                      className="px-4 py-2 bg-red-500 hover:bg-red-700 rounded"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={handleGoogleLogin}
+                    className="px-4 py-2 text-white hover:bg-blue-700 rounded"
+                  >
+                    Login with Google
+                  </button>
+                )}
               </nav>
             </SheetContent>
           </Sheet>

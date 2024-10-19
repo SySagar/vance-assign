@@ -1,8 +1,8 @@
-// firebase.ts
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
-// Firebase configuration copied from your Firebase Console
 const firebaseConfig = {
     apiKey: "AIzaSyAkD_1G9kpoCU2Vez8ikVXMi_9QY1Qy9wQ",
     authDomain: "vance-assnign.firebaseapp.com",
@@ -13,8 +13,30 @@ const firebaseConfig = {
     measurementId: "G-JT98YKGK98"
   };
 
-// Initialize Firebase
+  
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore
+export const auth = getAuth(app);
+
+const provider = new GoogleAuthProvider();
+
+export const signInWithGoogle = async (router:any) => {
+  try {
+    await signInWithPopup(auth, provider);
+    router.push("/dashboard");
+  } catch (error) {
+    console.error("Error during sign-in:", error);
+  }
+};
+
+export const signOutUser = async (router:any) => {
+  try {
+    await signOut(auth);
+    router.push("/");
+  } catch (error) {
+    console.error("Error during sign-in:", error);
+  }
+  
+};
+
 export const db = getFirestore(app);
