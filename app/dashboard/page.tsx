@@ -4,7 +4,8 @@ import RateAlertDashboard from '@app/components/RateAlert'
 import { getRateAlerts } from '@app/lib/alertService';
 import { useState, useEffect } from 'react'
 import PreviousAlerts from '@app/components/PreviousAlerts'
-
+import useLoading from '@app/store/useLoading'
+import { checkAlertTrigger } from '@app/lib/alertService';
 
 type typeRateAlert = {
   id: string
@@ -16,20 +17,34 @@ type typeRateAlert = {
 
 
 export default function page() {
-
+  
   const [alerts, setAlerts] = useState<typeRateAlert[]>([]);
+  const {setLoading} = useLoading()
 
   const fetchAlerts = async () => {
-    console.log('test');
-    const alertsFromFirestore = await getRateAlerts();
-    setAlerts(alertsFromFirestore);
+    try {
+    setLoading(true)
+    const alertsFromFirestore = await getRateAlerts()
+    const checkedAlerts = await Promise.all(alertsFromFirestore.map(async (alert) => {
+      const triggeredDate = await checkAlertTrigger(alert)
+      return { ...alert, triggeredDate }
+    }))
+
+
+      setAlerts(checkedAlerts);
+    
+  } catch (error) {
+   console.error(error)   
+  }
+  finally{
+    setLoading(false)}
   };
 
   useEffect(() => {
     fetchAlerts();
   }, []);
 
-  console.log("hehes")
+  console.log("hehes", alerts)
 
 
   return (
@@ -40,7 +55,7 @@ export default function page() {
 
     
         <div className='w-full flex flex-col justify-center items-center mt-16 '>
-        <PreviousAlerts />
+        <PreviousAlerts alerts={alerts} />
       </div>
         </div>
 

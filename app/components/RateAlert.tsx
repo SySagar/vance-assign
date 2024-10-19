@@ -8,6 +8,11 @@ import { Line, LineChart, XAxis, YAxis, ResponsiveContainer, CartesianGrid } fro
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@app/components/ui/chart"
 import { Flag, SquarePlus } from 'lucide-react'
 import RateAlertModal from '@app/components/AlertModal'
+import useCountry from '@app/store/useCountry'
+import useLoading from '@app/store/useLoading'
+import { Skeleton } from "@app/components/ui/skeleton"
+import Image from 'next/image'
+import { div } from 'framer-motion/client'
 
 type RateAlertDashboardProps = {
   onAlertSubmit: () => void; 
@@ -49,13 +54,17 @@ export default function RateAlertDashboard(
   const [forexData, setForexData] = useState<ForexData[]>([])
   const [currentRate, setCurrentRate] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { countryInfo,setCountryInfo } = useCountry(); 
+  const {loading,setLoading} = useLoading()
 
   useEffect(() => {
     fetchForexData(selectedCountry.currency)
+    setCountryInfo(selectedCountry.currency, `/flags/${selectedCountry.name.toLowerCase()}.png`, selectedCountry.name)
   }, [selectedCountry])
 
   const fetchForexData = async (currency: string) => {
     try {
+      setLoading(true)
       const response = await fetch(`https://web-api.vance.club/public/api/currency-converter/forex?code=${currency}INR%3DX&timeline=1M`)
       const data: APIResponse[] = await response.json()
       console.log("data", data)
@@ -70,12 +79,14 @@ export default function RateAlertDashboard(
     } catch (error) {
       console.error("Error fetching forex data:", error)
     }
+    finally {
+      setLoading(false)
+    }
   }
 
   const formatYAxis = (value: number) => `${value}L`
 
   const handleSubmit = (title: string, value: number) => {
-    // Here you would typically handle saving to Firebase
     console.log('Submitted:', { title, value })
     setIsModalOpen(false)
   }
@@ -91,7 +102,8 @@ export default function RateAlertDashboard(
             <SelectTrigger className="w-[150px] bg-[#393939] border-gray-700">
               <SelectValue>
                 <div className="flex items-center">
-                  <Flag className="mr-2 h-4 w-4" />
+                  {/* <Flag className="mr-2 h-4 w-4" /> */}
+                  <Image src={countryInfo.flagImage} alt={selectedCountry.name} width={20} height={20} className="rounded-full mr-2" /> 
                   {selectedCountry.name} <span className='text-[12px] ml-2 text-stone-400'>£({selectedCountry.currency})</span>
                 </div>
               </SelectValue>
@@ -137,7 +149,15 @@ export default function RateAlertDashboard(
         </ChartContainer>
 
         <div className="mt-4 flex justify-between items-center">
-          <div className="text-3xl font-bold">₹{currentRate?.toFixed(2)}</div>
+          <div className="text-3xl font-bold">{loading? 
+          <Skeleton className="w-[100px] h-[30px] rounded-full " />
+            :
+            <div>
+          ₹{currentRate?.toFixed(2)}
+            </div>
+          
+          }
+          </div>
           <Button 
             className="hover:bg-emerald-600 rounded-3xl p-4 text-black font-semibold"
             onClick={() => setIsModalOpen(true)}

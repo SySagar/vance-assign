@@ -2,12 +2,13 @@
 import { db } from './firebase';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 
-export const addRateAlert = async (title: string, value: number, currency: string) => {
+export const addRateAlert = async (title: string, value: number, currency: string, country:string) => {
   try {
     const docRef = await addDoc(collection(db, 'rateAlerts'), {
       title,
       value,
       currency,
+      country,
       createdAt: new Date(),
     });
     console.log('Rate alert added with ID:', docRef.id);

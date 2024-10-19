@@ -6,6 +6,8 @@ import { Input } from "@app/components/ui/input"
 import { Button } from "@app/components/ui/button"
 import { Label } from "@app/components/ui/label"
 import { addRateAlert } from '@app/lib/alertService';
+import useCountry from '@app/store/useCountry'
+import useAlerts from '@app/store/useAlerts'
 
 import Image from 'next/image'
 
@@ -19,13 +21,15 @@ type RateAlertModalProps = {
 export default function RateAlertModal({ isOpen, onClose, onSubmit,onAlertSubmit }: RateAlertModalProps) {
   const [title, setTitle] = useState('')
   const [value, setValue] = useState('')
+  const { countryInfo,setCountryInfo } = useCountry(); 
+  const {alerts,setAlerts} = useAlerts()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     onSubmit(title, parseFloat(value))
 
-    const addAlert = async ()=>await addRateAlert(title, parseFloat(value), "GBP")
-
+    const addAlert = async ()=>await addRateAlert(title, parseFloat(value), countryInfo.countryCode, countryInfo.name)
+    setAlerts([...alerts, {id:Math.random().toString(),title:title,value:parseFloat(value),currency:countryInfo.countryCode,createdAt:new Date()}])
     addAlert().then(() => {
 
       setTitle('')
@@ -34,6 +38,12 @@ export default function RateAlertModal({ isOpen, onClose, onSubmit,onAlertSubmit
       onAlertSubmit()
       onClose()
     })
+  }
+
+  const handleCancel = () => {
+    setTitle('')
+    setValue('')
+    onClose()
   }
 
   return (
@@ -45,13 +55,13 @@ export default function RateAlertModal({ isOpen, onClose, onSubmit,onAlertSubmit
         <div className="flex flex-col items-center mt-4">
           <div className="flex flex-col gap-3 items-center space-x-2 mb-6">
             <Image
-              src="/uk.png"
-              alt="UK flag"
+              src={countryInfo.flagImage}
+              alt={countryInfo.countryCode}
               width={44}
               height={44}
               className="rounded-full"
             />
-            <span>UK £(GBP)</span>
+            <span>{countryInfo.name} £({countryInfo.countryCode})</span>
           </div>
           <form onSubmit={handleSubmit} className="w-full space-y-4 ">
             <div className=' flex flex-col justify-start items-start gap-3'>
@@ -81,7 +91,7 @@ export default function RateAlertModal({ isOpen, onClose, onSubmit,onAlertSubmit
             </Button>
           </form>
           <button
-            onClick={onClose}
+            onClick={handleCancel}
             className="mt-4 text-sm text-gray-400 hover:text-gray-300"
           >
             Cancel
