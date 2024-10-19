@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import Link from "next/link";
-import { Menu, X, CircleArrowDownIcon, ArrowDown } from "lucide-react";
+import { Menu,  ArrowDown } from "lucide-react";
 
 import { Button } from "@app/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@app/components/ui/sheet";

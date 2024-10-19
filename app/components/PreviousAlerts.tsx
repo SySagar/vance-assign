@@ -1,9 +1,8 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState,  useRef, useCallback } from 'react'
 import { Card, CardContent } from "@app/components/ui/card"
 import Image from 'next/image'
-import { getRateAlerts, checkAlertTrigger } from '@app/lib/alertService'
 import React from 'react'
 import {Skeleton} from '@app/components/ui/skeleton'
 import {
@@ -14,7 +13,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@app/components/ui/pagination"
-import useAlerts from '@app/store/useAlerts'
 import useLoading from '@app/store/useLoading'
 
 type Alert = {

@@ -16,7 +16,7 @@ type typeRateAlert = {
 }
 
 
-export default function page() {
+export default function Page() {
   
   const [alerts, setAlerts] = useState<typeRateAlert[]>([]);
   const {setLoading} = useLoading()

@@ -21,7 +21,7 @@ type RateAlertModalProps = {
 export default function RateAlertModal({ isOpen, onClose, onSubmit,onAlertSubmit }: RateAlertModalProps) {
   const [title, setTitle] = useState('')
   const [value, setValue] = useState('')
-  const { countryInfo,setCountryInfo } = useCountry(); 
+  const { countryInfo } = useCountry(); 
   const {alerts,setAlerts} = useAlerts()
 
   const handleSubmit = async (e: React.FormEvent) => {

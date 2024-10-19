@@ -12,7 +12,6 @@ import useCountry from '@app/store/useCountry'
 import useLoading from '@app/store/useLoading'
 import { Skeleton } from "@app/components/ui/skeleton"
 import Image from 'next/image'
-import { div } from 'framer-motion/client'
 
 type RateAlertDashboardProps = {
   onAlertSubmit: () => void; 
