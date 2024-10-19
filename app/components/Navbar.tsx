@@ -79,7 +79,7 @@ export default function Navbar() {
             </svg>
           </Link>
         </div>
-        <div className="hidden md:flex space-x-4">
+        <div className="hidden md:flex md:ml-80 space-x-4">
           {navigation.map((item) => (
             <Link
               key={item.name}
